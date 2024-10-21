@@ -4,6 +4,8 @@ package com.example.service;
 //import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 
 import com.google.api.gax.core.CredentialsProvider;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.vision.v1.*;
@@ -17,7 +19,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
+import org.springframework.data.annotation.Id;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.RestClient;
 
@@ -38,6 +42,7 @@ public class ServiceApplication {
 }
 
 @Configuration
+@Profile("vision")
 class VisionDemoConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -64,12 +69,11 @@ class VisionDemoConfiguration {
                     .build();
             var response = imageAnnotatorClient.batchAnnotateImages(List.of(build));
             this.log.info(response.toString());
-
         };
     }
 }
 
-//@Profile("pubsub")
+@Profile("pubsub")
 @Configuration
 class PubsubDemoConfiguration {
 
@@ -88,7 +92,7 @@ class PubsubDemoConfiguration {
     }
 }
 
-//@Profile("gemini")
+@Profile("gemini")
 @Configuration
 class GeminiDemoConfiguration {
 
@@ -110,96 +114,22 @@ class GeminiDemoConfiguration {
     }
 }
 
-/*
+@Configuration
+class SpannerDemoConfiguration {
 
-@Component
-class VisionDemo {
-
-	private final Resource resource;
-	private final ImageAnnotatorClient imageAnnotatorClient;
-
-	VisionDemo(
-		@Value("gs://pgtm-jlong-bucket/cat.jpg") Resource cat,
-		ImageAnnotatorClient imageAnnotatorClient) {
-		this.resource = cat;
-		this.imageAnnotatorClient = imageAnnotatorClient;
-	}
-
-	@EventListener(ApplicationReadyEvent.class)
-	public void demo() throws Exception {
-
-		byte[] catBytes = FileCopyUtils
-			.copyToByteArray(this.resource.getInputStream());
-
-		AnnotateImageRequest build = AnnotateImageRequest
-			.newBuilder()
-			.addFeatures(Feature.newBuilder().setType(Feature.Type.LABEL_DETECTION))
-			.setImage(Image.newBuilder().setContent(ByteString.copyFrom(catBytes)))
-			.build();
-
-		BatchAnnotateImagesResponse response =
-			this.imageAnnotatorClient.batchAnnotateImages(Collections.singletonList(build));
-
-		log.info(response);
-	}
-
-}
-*/
-/*
-@Component
-class SpannerDemo {
-
-	private final ReservationRepository reservationRepository;
-
-	private final Logger log = LoggerFactory.getLogger(getClass());
-
-	SpannerDemo(ReservationRepository reservationRepository) {
-		this.reservationRepository = reservationRepository;
-	}
-
-	@EventListener(ApplicationReadyEvent.class)
-	public void demo() throws Exception {
-		this.reservationRepository.deleteAll();
-		Stream
-				.of("Ray", "Josh", "Olga", "Violetta", "Cornelia", "Dave", "Mark", "Madhura", "Andy")
-				.map(name -> new Reservation(UUID.randomUUID().toString(), name))
-				.map(this.reservationRepository::save)
-				.forEach(r -> log.info(r.toString()));
-	}
-
-}
-
-interface ReservationRepository extends SpannerRepository<Reservation, String> {
-}
-
-@Table(name = "reservations")
-record Reservation(String id, String name) {
-}
-
-@Component
-class MySqlDemo {
-
-	private final Logger log = LoggerFactory.getLogger(getClass());
-
-	private final JdbcTemplate jdbcTemplate;
-
-	private record Reservation(Long id, String name) {
-	}
-
-	MySqlDemo(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	@EventListener(ApplicationReadyEvent.class)
-	public void demo() {
-		var reservationRowMapper = (RowMapper<Reservation>)
-				(rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"));
-		this.jdbcTemplate
-				.query("select * from reservations", reservationRowMapper)
-				.forEach(r -> log.info(r.toString()));
+    @Bean
+    ApplicationRunner spannerDemo(DogRepository repository) {
+        return args -> {
+            var log = LoggerFactory.getLogger(getClass());
+            repository.findAll().forEach(d -> log.info(d.toString()));
+        };
 	}
 }
 
- */
+interface DogRepository extends SpannerRepository<Dog, String> {
+}
 
+@Table(name = "dog")
+record Dog(@Id String id, String name) {
+}
  
