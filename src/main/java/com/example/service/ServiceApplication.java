@@ -4,8 +4,6 @@ package com.example.service;
 //import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.cloud.spring.data.spanner.core.mapping.Table;
-import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
 import com.google.cloud.vision.v1.*;
@@ -21,7 +19,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
-import org.springframework.data.annotation.Id;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.RestClient;
 
@@ -126,10 +123,3 @@ class SpannerDemoConfiguration {
 	}
 }
 
-interface DogRepository extends SpannerRepository<Dog, String> {
-}
-
-@Table(name = "dog")
-record Dog(@Id String id, String name) {
-}
- 
