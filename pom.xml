@@ -49,10 +49,6 @@
 			<groupId>com.google.cloud</groupId>
 			<artifactId>spring-cloud-gcp-starter-storage</artifactId>
 		</dependency>
-	<!--	<dependency>
-			<groupId>org.springframework.ai</groupId>
-			<artifactId>spring-ai-pgvector-store-spring-boot-starter</artifactId>
-		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.ai</groupId>
 			<artifactId>spring-ai-vertex-ai-gemini-spring-boot-starter</artifactId>
@@ -66,28 +62,14 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>spring-cloud-gcp-starter-data-spanner</artifactId>
 		</dependency>
-		
-		
-<!--		-->
-
-
-		<!--   -->
-	 
-		<!--        <dependency>
-                    <groupId>org.springframework.ai</groupId>
-                    <artifactId>spring-ai-pgvector-store-spring-boot-starter</artifactId>
-                </dependency>-->
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>spring-cloud-gcp-vision</artifactId>
 		</dependency>
-		
-		
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
