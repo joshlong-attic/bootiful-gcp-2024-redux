@@ -17,7 +17,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.RestClient;
@@ -39,7 +38,6 @@ public class ServiceApplication {
 }
 
 @Configuration
-@Profile("vision")
 class VisionDemoConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -70,7 +68,6 @@ class VisionDemoConfiguration {
     }
 }
 
-@Profile("pubsub")
 @Configuration
 class PubsubDemoConfiguration {
 
@@ -89,7 +86,6 @@ class PubsubDemoConfiguration {
     }
 }
 
-@Profile("gemini")
 @Configuration
 class GeminiDemoConfiguration {
 
